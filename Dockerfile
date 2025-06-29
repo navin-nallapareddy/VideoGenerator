@@ -1,21 +1,15 @@
 FROM node:18
 
-# Install ffmpeg
 RUN apt-get update && apt-get install -y ffmpeg
 
-# Create app directory
 WORKDIR /app
 
-# Install dependencies
 COPY package*.json ./
 RUN npm install
 
-# Copy app files
-COPY . .
+COPY . .  # IMPORTANT: this copies public/, index.js, etc
 
-# Expose the port Render uses
-ENV PORT=3000
-EXPOSE 3000
+ENV PORT=10000
+EXPOSE 10000
 
-# Start the app
 CMD ["npm", "start"]
