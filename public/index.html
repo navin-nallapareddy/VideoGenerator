@@ -4,14 +4,17 @@
   <title>IT Team Video Generator</title>
 </head>
 <body style="text-align:center; font-family:sans-serif;">
-  <h1>IT Video Generator</h1>
+  <h1>IT Video Generator (TikTok Style)</h1>
 
   <textarea id="wordsInput" rows="4" cols="50"
     placeholder="Enter words separated by commas"></textarea><br><br>
 
   <button onclick="makeVideo()">Create Video</button>
   <br><br>
-  <video id="vid" width="640" controls></video>
+
+  <div id="status"></div>
+  <br>
+  <video id="vid" width="360" controls style="display:none;"></video>
 
   <script>
     async function makeVideo() {
@@ -24,17 +27,27 @@
       const words = input.split(",").map(w => w.trim()).filter(w => w.length);
       console.log("Sending words:", words);
 
-      const res = await fetch('/generate-video', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ words })
-      });
+      document.getElementById('status').innerText = "⏳ Generating video...";
+      document.getElementById('vid').style.display = "none";
 
-      if (res.ok) {
-        const data = await res.json();
-        document.getElementById('vid').src = data.video_url;
-      } else {
-        alert("Failed to generate video.");
+      try {
+        const res = await fetch('/generate-video', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ words })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById('status').innerText = "✅ Done!";
+          document.getElementById('vid').src = data.video_url;
+          document.getElementById('vid').style.display = "block";
+        } else {
+          document.getElementById('status').innerText = "❌ Failed to generate video.";
+        }
+      } catch (e) {
+        console.error(e);
+        document.getElementById('status').innerText = "❌ Failed to connect to server.";
       }
     }
   </script>
