@@ -1,24 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>IT Video Generator</title>
+  <title>IT Team Video Generator</title>
 </head>
-<body style="text-align:center;font-family:sans-serif;">
-<h1>IT Team Video Generator (Node Version)</h1>
-<button onclick="makeVideo()">Create Video</button>
-<br><br>
-<video id="vid" width="640" controls></video>
-<script>
-async function makeVideo() {
-  const words = ["Fudge", "Quantum", "Destiny", "Robot", "Galaxy", "Cheese", "Blizzard"];
-  const res = await fetch('/generate-video', {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({ words })
-  });
-  const data = await res.json();
-  document.getElementById('vid').src = data.video_url;
-}
-</script>
+<body style="text-align:center; font-family:sans-serif;">
+  <h1>IT Video Generator</h1>
+
+  <textarea id="wordsInput" rows="4" cols="50"
+    placeholder="Enter words separated by commas"></textarea><br><br>
+
+  <button onclick="makeVideo()">Create Video</button>
+  <br><br>
+  <video id="vid" width="640" controls></video>
+
+  <script>
+    async function makeVideo() {
+      const input = document.getElementById('wordsInput').value;
+      if (!input.trim()) {
+        alert("Please enter some words separated by commas.");
+        return;
+      }
+
+      const words = input.split(",").map(w => w.trim()).filter(w => w.length);
+      console.log("Sending words:", words);
+
+      const res = await fetch('/generate-video', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ words })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        document.getElementById('vid').src = data.video_url;
+      } else {
+        alert("Failed to generate video.");
+      }
+    }
+  </script>
 </body>
 </html>
