@@ -6,6 +6,7 @@ const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 app.use(express.json());
+app.use(express.static('public')); // <== this serves index.html
 app.use('/videos', express.static('videos'));
 
 app.post('/generate-video', (req, res) => {
