@@ -7,7 +7,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-COPY . .  # IMPORTANT: this copies public/, index.js, etc
+# IMPORTANT: this copies public/, index.js, etc
+COPY . .
 
 ENV PORT=10000
 EXPOSE 10000
