@@ -1,1 +1,24 @@
-
+<!DOCTYPE html>
+<html>
+<head>
+  <title>IT Video Generator</title>
+</head>
+<body style="text-align:center;font-family:sans-serif;">
+<h1>IT Team Video Generator (Node Version)</h1>
+<button onclick="makeVideo()">Create Video</button>
+<br><br>
+<video id="vid" width="640" controls></video>
+<script>
+async function makeVideo() {
+  const words = ["Fudge", "Quantum", "Destiny", "Robot", "Galaxy", "Cheese", "Blizzard"];
+  const res = await fetch('/generate-video', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ words })
+  });
+  const data = await res.json();
+  document.getElementById('vid').src = data.video_url;
+}
+</script>
+</body>
+</html>
